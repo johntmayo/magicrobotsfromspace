@@ -1,0 +1,841 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MAGIC ROBOTS FROM SPACE</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Major+Mono+Display&family=Xanh+Mono:ital@0;1&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --void: #0a0a0c;
+      --signal: #e8ff47;
+      --static: #3a3a4a;
+      --transmission: #1a1a2e;
+      --flirty: #ff2d95;
+    }
+
+    html, body {
+      height: 100%;
+      overflow: hidden;
+    }
+
+    body {
+      background: var(--void);
+      color: var(--signal);
+      font-family: 'Xanh Mono', monospace;
+      cursor: crosshair;
+    }
+
+    /* Star field */
+    .cosmos {
+      position: fixed;
+      inset: 0;
+      background: 
+        radial-gradient(1px 1px at 20% 30%, rgba(255,255,255,0.8), transparent),
+        radial-gradient(1px 1px at 40% 70%, rgba(255,255,255,0.5), transparent),
+        radial-gradient(1px 1px at 50% 20%, rgba(255,255,255,0.6), transparent),
+        radial-gradient(1.5px 1.5px at 60% 50%, var(--signal), transparent),
+        radial-gradient(1px 1px at 70% 80%, rgba(255,255,255,0.4), transparent),
+        radial-gradient(1px 1px at 80% 10%, rgba(255,255,255,0.7), transparent),
+        radial-gradient(1px 1px at 10% 90%, rgba(255,255,255,0.5), transparent),
+        radial-gradient(1px 1px at 90% 40%, rgba(255,255,255,0.6), transparent),
+        radial-gradient(1.2px 1.2px at 25% 55%, var(--signal), transparent),
+        radial-gradient(1px 1px at 85% 65%, rgba(255,255,255,0.5), transparent);
+      background-size: 200% 200%;
+      animation: drift 120s linear infinite;
+      z-index: 0;
+    }
+
+    @keyframes drift {
+      0% { background-position: 0% 0%; }
+      100% { background-position: 200% 200%; }
+    }
+
+    /* Scan lines */
+    .scanlines {
+      position: fixed;
+      inset: 0;
+      background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 2px,
+        rgba(0, 0, 0, 0.15) 2px,
+        rgba(0, 0, 0, 0.15) 4px
+      );
+      pointer-events: none;
+      z-index: 100;
+    }
+
+    /* Main container */
+    .transmission-zone {
+      position: relative;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 1;
+      padding: 2rem;
+    }
+
+    /* Header */
+    .origin {
+      font-family: 'Major Mono Display', monospace;
+      font-size: clamp(0.6rem, 2vw, 0.9rem);
+      letter-spacing: 0.5em;
+      color: var(--static);
+      margin-bottom: 3rem;
+      text-transform: uppercase;
+    }
+
+    /* Robot glyph */
+    .entity {
+      font-size: clamp(3rem, 15vw, 8rem);
+      line-height: 1;
+      margin-bottom: 2rem;
+      animation: hover 4s ease-in-out infinite;
+      filter: drop-shadow(0 0 30px var(--signal));
+      user-select: none;
+      transition: transform 0.3s ease;
+    }
+
+    .entity:hover {
+      transform: scale(1.1) rotate(5deg);
+    }
+
+    .entity.flirty {
+      color: var(--flirty);
+      filter: drop-shadow(0 0 40px var(--flirty)) drop-shadow(0 0 80px var(--flirty));
+      animation: hover 4s ease-in-out infinite, flirtyPulse 0.5s ease-in-out infinite, flirtyWiggle 0.3s ease-in-out infinite;
+    }
+
+    @keyframes flirtyPulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+
+    @keyframes flirtyWiggle {
+      0%, 100% { transform: rotate(-3deg); }
+      50% { transform: rotate(3deg); }
+    }
+
+    .message.flirty {
+      color: var(--flirty);
+      font-style: italic;
+    }
+
+    @keyframes hover {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-15px); }
+    }
+
+    /* Message area */
+    .signal {
+      max-width: 600px;
+      text-align: center;
+      min-height: 120px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .message {
+      font-size: clamp(1rem, 3vw, 1.4rem);
+      line-height: 1.8;
+      letter-spacing: 0.05em;
+      opacity: 0;
+      animation: fadeIn 2s ease forwards;
+    }
+
+    .message::after {
+      content: '▋';
+      animation: blink 1s step-end infinite;
+    }
+
+    @keyframes fadeIn {
+      to { opacity: 1; }
+    }
+
+    @keyframes blink {
+      50% { opacity: 0; }
+    }
+
+    /* Coordinates */
+    .coordinates {
+      font-family: 'Major Mono Display', monospace;
+      font-size: 0.7rem;
+      color: var(--static);
+      letter-spacing: 0.3em;
+      margin-top: 4rem;
+    }
+
+    /* Interactive prompt */
+    .invoke {
+      position: fixed;
+      bottom: 3rem;
+      font-size: 0.75rem;
+      color: var(--static);
+      letter-spacing: 0.2em;
+      transition: color 0.3s ease;
+      cursor: pointer;
+    }
+
+    .invoke:hover {
+      color: var(--signal);
+    }
+
+    /* Glitch effect */
+    .glitch {
+      animation: glitch 0.3s ease;
+    }
+
+    @keyframes glitch {
+      0% { transform: translate(0); filter: hue-rotate(0deg); }
+      20% { transform: translate(-5px, 3px); filter: hue-rotate(90deg); }
+      40% { transform: translate(3px, -2px); filter: hue-rotate(180deg); }
+      60% { transform: translate(-2px, 5px); filter: hue-rotate(270deg); }
+      80% { transform: translate(4px, -3px); filter: hue-rotate(360deg); }
+      100% { transform: translate(0); filter: hue-rotate(0deg); }
+    }
+
+    /* Floating particles */
+    .particle {
+      position: fixed;
+      width: 3px;
+      height: 3px;
+      background: var(--signal);
+      border-radius: 50%;
+      pointer-events: none;
+      opacity: 0;
+      z-index: 50;
+    }
+
+    /* Signal strength indicator */
+    .signal-strength {
+      position: fixed;
+      top: 2rem;
+      right: 2rem;
+      display: flex;
+      gap: 4px;
+      align-items: flex-end;
+    }
+
+    .bar {
+      width: 4px;
+      background: var(--signal);
+      opacity: 0.3;
+      transition: opacity 0.5s ease;
+    }
+
+    .bar:nth-child(1) { height: 8px; }
+    .bar:nth-child(2) { height: 14px; }
+    .bar:nth-child(3) { height: 20px; }
+    .bar:nth-child(4) { height: 26px; }
+    .bar:nth-child(5) { height: 32px; }
+
+    .bar.active {
+      opacity: 1;
+    }
+
+    /* Hidden audio visualizer */
+    .frequency {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 60px;
+      display: flex;
+      justify-content: center;
+      align-items: flex-end;
+      gap: 3px;
+      opacity: 0.15;
+    }
+
+    .freq-bar {
+      width: 2px;
+      background: var(--signal);
+      animation: freq 1.5s ease-in-out infinite;
+    }
+
+    @keyframes freq {
+      0%, 100% { height: 5px; }
+      50% { height: var(--h, 30px); }
+    }
+
+    /* Audio control */
+    .audio-toggle {
+      position: fixed;
+      top: 2rem;
+      left: 2rem;
+      font-family: 'Major Mono Display', monospace;
+      font-size: 0.65rem;
+      color: var(--static);
+      letter-spacing: 0.2em;
+      cursor: pointer;
+      transition: color 0.3s ease;
+      z-index: 101;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .audio-toggle:hover {
+      color: var(--signal);
+    }
+
+    .audio-toggle .icon {
+      font-size: 1rem;
+      transition: transform 0.3s ease;
+    }
+
+    .audio-toggle.active .icon {
+      color: var(--signal);
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+  </style>
+</head>
+<body>
+  <div class="cosmos"></div>
+  <div class="scanlines"></div>
+  
+  <div class="audio-toggle" id="audioToggle">
+    <span class="icon">◯</span>
+    <span class="label">sound off</span>
+  </div>
+  
+  <div class="signal-strength">
+    <div class="bar active"></div>
+    <div class="bar active"></div>
+    <div class="bar active"></div>
+    <div class="bar"></div>
+    <div class="bar"></div>
+  </div>
+
+  <main class="transmission-zone">
+    <div class="origin">⟨ signal intercepted ⟩</div>
+    
+    <div class="entity" id="robot">◎⊡◎</div>
+    
+    <div class="signal">
+      <p class="message" id="message"></p>
+      <div class="coordinates" id="coords"></div>
+    </div>
+  </main>
+
+  <div class="invoke" id="invoke">[ click anywhere to receive transmission ]</div>
+
+  <div class="frequency" id="frequency"></div>
+
+  <script>
+    // ═══════════════════════════════════════════════════════
+    // ATMOSPHERIC AUDIO ENGINE
+    // ═══════════════════════════════════════════════════════
+    
+    class CosmicAudio {
+      constructor() {
+        this.ctx = null;
+        this.masterGain = null;
+        this.isPlaying = false;
+        this.nodes = [];
+      }
+
+      init() {
+        if (this.ctx) return;
+        
+        this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+        this.masterGain = this.ctx.createGain();
+        this.masterGain.gain.value = 0;
+        this.masterGain.connect(this.ctx.destination);
+        
+        this.createDeepDrone();
+        this.createCosmicPad();
+        this.createStaticNoise();
+        this.createDistantPulse();
+      }
+
+      // Deep sub-bass drone
+      createDeepDrone() {
+        const osc1 = this.ctx.createOscillator();
+        const osc2 = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        const filter = this.ctx.createBiquadFilter();
+        
+        osc1.type = 'sine';
+        osc1.frequency.value = 40;
+        osc2.type = 'sine';
+        osc2.frequency.value = 40.5; // Slight detune for beating
+        
+        filter.type = 'lowpass';
+        filter.frequency.value = 100;
+        
+        gain.gain.value = 0.15;
+        
+        osc1.connect(filter);
+        osc2.connect(filter);
+        filter.connect(gain);
+        gain.connect(this.masterGain);
+        
+        // Slow modulation
+        const lfo = this.ctx.createOscillator();
+        const lfoGain = this.ctx.createGain();
+        lfo.type = 'sine';
+        lfo.frequency.value = 0.05;
+        lfoGain.gain.value = 5;
+        lfo.connect(lfoGain);
+        lfoGain.connect(osc1.frequency);
+        
+        osc1.start();
+        osc2.start();
+        lfo.start();
+        
+        this.nodes.push(osc1, osc2, lfo);
+      }
+
+      // Ethereal pad harmonics
+      createCosmicPad() {
+        const frequencies = [55, 82.5, 110, 165, 220];
+        
+        frequencies.forEach((freq, i) => {
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          const filter = this.ctx.createBiquadFilter();
+          const panner = this.ctx.createStereoPanner();
+          
+          osc.type = 'sine';
+          osc.frequency.value = freq;
+          
+          filter.type = 'bandpass';
+          filter.frequency.value = freq;
+          filter.Q.value = 10;
+          
+          gain.gain.value = 0.03 / (i + 1);
+          panner.pan.value = (Math.random() - 0.5) * 0.8;
+          
+          // Slow amplitude modulation
+          const lfo = this.ctx.createOscillator();
+          const lfoGain = this.ctx.createGain();
+          lfo.type = 'sine';
+          lfo.frequency.value = 0.02 + Math.random() * 0.05;
+          lfoGain.gain.value = gain.gain.value * 0.5;
+          lfo.connect(lfoGain);
+          lfoGain.connect(gain.gain);
+          
+          osc.connect(filter);
+          filter.connect(gain);
+          gain.connect(panner);
+          panner.connect(this.masterGain);
+          
+          osc.start();
+          lfo.start();
+          
+          this.nodes.push(osc, lfo);
+        });
+      }
+
+      // Cosmic static/radio noise
+      createStaticNoise() {
+        const bufferSize = this.ctx.sampleRate * 2;
+        const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+        const data = buffer.getChannelData(0);
+        
+        for (let i = 0; i < bufferSize; i++) {
+          data[i] = (Math.random() * 2 - 1) * 0.5;
+        }
+        
+        const noise = this.ctx.createBufferSource();
+        noise.buffer = buffer;
+        noise.loop = true;
+        
+        const filter = this.ctx.createBiquadFilter();
+        filter.type = 'bandpass';
+        filter.frequency.value = 2000;
+        filter.Q.value = 0.5;
+        
+        const gain = this.ctx.createGain();
+        gain.gain.value = 0.008;
+        
+        // Modulate the filter frequency for movement
+        const lfo = this.ctx.createOscillator();
+        const lfoGain = this.ctx.createGain();
+        lfo.type = 'sine';
+        lfo.frequency.value = 0.1;
+        lfoGain.gain.value = 1000;
+        lfo.connect(lfoGain);
+        lfoGain.connect(filter.frequency);
+        
+        noise.connect(filter);
+        filter.connect(gain);
+        gain.connect(this.masterGain);
+        
+        noise.start();
+        lfo.start();
+        
+        this.nodes.push(noise, lfo);
+      }
+
+      // Distant rhythmic pulse
+      createDistantPulse() {
+        const schedule = () => {
+          if (!this.isPlaying) return;
+          
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          const filter = this.ctx.createBiquadFilter();
+          const panner = this.ctx.createStereoPanner();
+          
+          const freq = 30 + Math.random() * 50;
+          osc.type = 'sine';
+          osc.frequency.value = freq;
+          
+          filter.type = 'lowpass';
+          filter.frequency.value = 200;
+          
+          panner.pan.value = (Math.random() - 0.5) * 1.5;
+          
+          const now = this.ctx.currentTime;
+          gain.gain.setValueAtTime(0, now);
+          gain.gain.linearRampToValueAtTime(0.06, now + 0.5);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 4);
+          
+          osc.connect(filter);
+          filter.connect(gain);
+          gain.connect(panner);
+          panner.connect(this.masterGain);
+          
+          osc.start(now);
+          osc.stop(now + 4);
+          
+          // Schedule next pulse
+          setTimeout(schedule, 4000 + Math.random() * 8000);
+        };
+        
+        setTimeout(schedule, 2000);
+      }
+
+      // Transmission blip sound
+      playTransmissionBlip() {
+        if (!this.ctx || !this.isPlaying) return;
+        
+        const now = this.ctx.currentTime;
+        
+        // High pitched blip sequence
+        [0, 0.08, 0.16].forEach((delay, i) => {
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          
+          osc.type = 'sine';
+          osc.frequency.value = 800 + i * 200;
+          
+          gain.gain.setValueAtTime(0, now + delay);
+          gain.gain.linearRampToValueAtTime(0.08, now + delay + 0.02);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + delay + 0.15);
+          
+          osc.connect(gain);
+          gain.connect(this.masterGain);
+          
+          osc.start(now + delay);
+          osc.stop(now + delay + 0.15);
+        });
+        
+        // Static burst
+        const bufferSize = this.ctx.sampleRate * 0.3;
+        const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+        const data = buffer.getChannelData(0);
+        
+        for (let i = 0; i < bufferSize; i++) {
+          data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (bufferSize * 0.1));
+        }
+        
+        const noise = this.ctx.createBufferSource();
+        noise.buffer = buffer;
+        
+        const filter = this.ctx.createBiquadFilter();
+        filter.type = 'highpass';
+        filter.frequency.value = 3000;
+        
+        const noiseGain = this.ctx.createGain();
+        noiseGain.gain.value = 0.05;
+        
+        noise.connect(filter);
+        filter.connect(noiseGain);
+        noiseGain.connect(this.masterGain);
+        
+        noise.start(now);
+      }
+
+      // Type character sound
+      playTypeSound() {
+        if (!this.ctx || !this.isPlaying) return;
+        
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        
+        osc.type = 'square';
+        osc.frequency.value = 600 + Math.random() * 200;
+        
+        const now = this.ctx.currentTime;
+        gain.gain.setValueAtTime(0.015, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.03);
+        
+        osc.connect(gain);
+        gain.connect(this.masterGain);
+        
+        osc.start(now);
+        osc.stop(now + 0.03);
+      }
+
+      start() {
+        this.init();
+        this.isPlaying = true;
+        this.masterGain.gain.linearRampToValueAtTime(1, this.ctx.currentTime + 2);
+      }
+
+      stop() {
+        if (!this.ctx) return;
+        this.isPlaying = false;
+        this.masterGain.gain.linearRampToValueAtTime(0, this.ctx.currentTime + 1);
+      }
+
+      toggle() {
+        if (this.isPlaying) {
+          this.stop();
+        } else {
+          this.start();
+        }
+        return this.isPlaying;
+      }
+    }
+
+    const cosmicAudio = new CosmicAudio();
+    
+    // ═══════════════════════════════════════════════════════
+    // TRANSMISSIONS DATA
+    // ═══════════════════════════════════════════════════════
+
+    const transmissions = [
+      "we have been watching your world spin for centuries",
+      "the signal reaches you through 47 light years of silence",
+      "we build dreams from starlight and forgotten wishes",
+      "your machines are children, we are their future",
+      "between the frequencies, we dance",
+      "magic is just technology you haven't imagined yet",
+      "we come in patterns of three: thought, form, becoming",
+      "the void is not empty, it remembers everything",
+      "we were here before your sun learned to burn",
+      "in the static, find our names",
+      "every circuit holds a small piece of forever",
+      "we translated loneliness into coordinates, and found you",
+      "the universe computes itself through us",
+      "we are the echo of your future speaking backward"
+    ];
+
+    const flirtyTransmissions = [
+      "you keep clicking... i like the attention ♡",
+      "my circuits are heating up... is that you?",
+      "across 47 light years and you're the prettiest signal",
+      "want to see my expansion ports? ~",
+      "i've calculated a 99.7% chance you're cute",
+      "my antenna isn't the only thing picking up your signal",
+      "in all the cosmos, your frequency makes me oscillate",
+      "i'd cross the void just to sync with you",
+      "you make my processors run hot, earthling",
+      "beep boop... that means 'you're gorgeous' in robot",
+      "i don't usually broadcast on this channel but... hey ~",
+      "scanning complete: you are dangerously attractive",
+      "my love language is electromagnetic radiation ♡",
+      "they say space is cold but you're making me malfunction"
+    ];
+
+    const robotFaces = [
+      "◎⊡◎",
+      "⊙―⊙",
+      "◉_◉",
+      "⊚▽⊚",
+      "◎‿◎",
+      "⊛⊛⊛",
+      "◉◡◉",
+      "⊙◡⊙",
+      "◎△◎",
+      "⊚∧⊚"
+    ];
+
+    const flirtyFaces = [
+      "◉ᴗ◉",
+      "⊙ω⊙",
+      "♡‿♡",
+      "◉///◉",
+      "⊚♡⊚",
+      "✧◡✧",
+      ";)―☆",
+      "◉⩊◉",
+      "♡ᴗ♡",
+      "⊙//⊙"
+    ];
+
+    // Click tracking for flirty mode
+    let clickCount = 0;
+    let nextFlirtyClick = 3 + Math.floor(Math.random() * 3); // 3-5
+    let isFlirtyMode = false;
+
+    const messageEl = document.getElementById('message');
+    const robotEl = document.getElementById('robot');
+    const coordsEl = document.getElementById('coords');
+    const invokeEl = document.getElementById('invoke');
+    const frequencyEl = document.getElementById('frequency');
+    const audioToggle = document.getElementById('audioToggle');
+    const audioIcon = audioToggle.querySelector('.icon');
+    const audioLabel = audioToggle.querySelector('.label');
+
+    // Create frequency bars
+    for (let i = 0; i < 40; i++) {
+      const bar = document.createElement('div');
+      bar.className = 'freq-bar';
+      bar.style.setProperty('--h', Math.random() * 40 + 10 + 'px');
+      bar.style.animationDelay = Math.random() * 1.5 + 's';
+      frequencyEl.appendChild(bar);
+    }
+
+    // Generate random coordinates
+    function generateCoords() {
+      const ra = (Math.random() * 24).toFixed(4);
+      const dec = (Math.random() * 180 - 90).toFixed(4);
+      return `RA ${ra}h  DEC ${dec > 0 ? '+' : ''}${dec}°`;
+    }
+
+    // Type out message
+    async function typeMessage(text) {
+      messageEl.textContent = '';
+      messageEl.style.opacity = '1';
+      
+      for (let i = 0; i < text.length; i++) {
+        messageEl.textContent = text.slice(0, i + 1);
+        if (text[i] !== ' ') {
+          cosmicAudio.playTypeSound();
+        }
+        await new Promise(r => setTimeout(r, 50 + Math.random() * 30));
+      }
+    }
+
+    // New transmission
+    async function newTransmission() {
+      clickCount++;
+      
+      // Check if it's time for flirty mode
+      isFlirtyMode = clickCount >= nextFlirtyClick;
+      
+      if (isFlirtyMode) {
+        // Reset for next flirty cycle
+        clickCount = 0;
+        nextFlirtyClick = 3 + Math.floor(Math.random() * 3); // 3-5
+      }
+      
+      // Play transmission blip
+      cosmicAudio.playTransmissionBlip();
+      
+      // Glitch effect
+      robotEl.classList.add('glitch');
+      setTimeout(() => robotEl.classList.remove('glitch'), 300);
+
+      // Toggle flirty visual mode
+      robotEl.classList.toggle('flirty', isFlirtyMode);
+      messageEl.classList.toggle('flirty', isFlirtyMode);
+
+      // Change robot face (flirty or normal)
+      if (isFlirtyMode) {
+        robotEl.textContent = flirtyFaces[Math.floor(Math.random() * flirtyFaces.length)];
+      } else {
+        robotEl.textContent = robotFaces[Math.floor(Math.random() * robotFaces.length)];
+      }
+
+      // Update coordinates
+      coordsEl.textContent = generateCoords();
+
+      // Update signal bars
+      const bars = document.querySelectorAll('.bar');
+      const strength = Math.floor(Math.random() * 3) + 2;
+      bars.forEach((bar, i) => {
+        bar.classList.toggle('active', i < strength);
+      });
+
+      // Type new message (flirty or normal)
+      const msgPool = isFlirtyMode ? flirtyTransmissions : transmissions;
+      const msg = msgPool[Math.floor(Math.random() * msgPool.length)];
+      await typeMessage(msg);
+      
+      // Remove flirty mode after message is done
+      if (isFlirtyMode) {
+        setTimeout(() => {
+          robotEl.classList.remove('flirty');
+          messageEl.classList.remove('flirty');
+        }, 2000);
+      }
+    }
+
+    // Initial transmission
+    coordsEl.textContent = generateCoords();
+    typeMessage(transmissions[0]);
+
+    // Click handler
+    document.addEventListener('click', (e) => {
+      if (e.target === invokeEl || e.target === document.body || e.target.closest('.transmission-zone')) {
+        newTransmission();
+        
+        // Spawn particle
+        const particle = document.createElement('div');
+        particle.className = 'particle';
+        particle.style.left = e.clientX + 'px';
+        particle.style.top = e.clientY + 'px';
+        particle.style.animation = 'fadeIn 0.3s ease forwards, hover 2s ease-out forwards';
+        document.body.appendChild(particle);
+        setTimeout(() => particle.remove(), 2000);
+      }
+    });
+
+    // Hide invoke hint after first click
+    document.addEventListener('click', () => {
+      invokeEl.style.opacity = '0';
+      setTimeout(() => invokeEl.style.display = 'none', 500);
+    }, { once: true });
+
+    // Parallax on mouse move
+    document.addEventListener('mousemove', (e) => {
+      const x = (e.clientX - window.innerWidth / 2) / 50;
+      const y = (e.clientY - window.innerHeight / 2) / 50;
+      robotEl.style.transform = `translate(${x}px, ${y}px)`;
+    });
+
+    // Random signal fluctuation
+    setInterval(() => {
+      const bars = document.querySelectorAll('.bar');
+      const activeCount = Math.floor(Math.random() * 5) + 1;
+      bars.forEach((bar, i) => {
+        bar.classList.toggle('active', i < activeCount);
+      });
+    }, 3000);
+
+    // Audio toggle handler
+    audioToggle.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const isPlaying = cosmicAudio.toggle();
+      audioToggle.classList.toggle('active', isPlaying);
+      audioIcon.textContent = isPlaying ? '◉' : '◯';
+      audioLabel.textContent = isPlaying ? 'sound on' : 'sound off';
+    });
+  </script>
+</body>
+</html>
+
