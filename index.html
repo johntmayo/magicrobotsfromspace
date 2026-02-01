@@ -314,241 +314,6 @@
       50% { opacity: 0.5; }
     }
 
-    /* ═══ PORTAL: Robot selection ═══ */
-    .portal {
-      position: relative;
-      z-index: 1;
-      width: 100%;
-      max-width: 900px;
-      padding: 2rem;
-      display: none;
-    }
-
-    .portal.visible {
-      display: block;
-      animation: fadeIn 1s ease forwards;
-    }
-
-    .portal-title {
-      font-family: 'Major Mono Display', monospace;
-      font-size: clamp(0.5rem, 1.5vw, 0.75rem);
-      letter-spacing: 0.6em;
-      color: var(--static);
-      text-align: center;
-      margin-bottom: 0.5rem;
-      text-transform: uppercase;
-    }
-
-    .portal-subtitle {
-      font-size: clamp(0.85rem, 2vw, 1.1rem);
-      color: var(--signal);
-      text-align: center;
-      margin-bottom: 2.5rem;
-      letter-spacing: 0.1em;
-      opacity: 0.9;
-    }
-
-    .robot-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-      gap: 1.25rem;
-      justify-items: center;
-    }
-
-    .robot-card {
-      width: 100%;
-      max-width: 160px;
-      aspect-ratio: 0.85;
-      background: rgba(26, 26, 46, 0.6);
-      border: 1px solid var(--static);
-      border-radius: 4px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: 1rem;
-      cursor: pointer;
-      transition: border-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
-    }
-
-    .robot-card:hover {
-      border-color: var(--signal);
-      transform: translateY(-4px);
-      box-shadow: 0 0 24px rgba(232, 255, 71, 0.15);
-    }
-
-    .robot-card .glyph {
-      font-size: clamp(2rem, 6vw, 3rem);
-      line-height: 1.2;
-      margin-bottom: 0.5rem;
-      filter: drop-shadow(0 0 12px currentColor);
-      transition: transform 0.3s ease;
-    }
-
-    .robot-card:hover .glyph {
-      transform: scale(1.1);
-    }
-
-    .robot-card .name {
-      font-family: 'Major Mono Display', monospace;
-      font-size: 0.6rem;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      margin-bottom: 0.25rem;
-    }
-
-    .robot-card .tagline {
-      font-size: 0.65rem;
-      color: var(--static);
-      text-align: center;
-      line-height: 1.3;
-    }
-
-    /* ═══ CONVERSATION view ═══ */
-    .conversation {
-      position: relative;
-      z-index: 1;
-      width: 100%;
-      max-width: 640px;
-      height: 100%;
-      min-height: 70vh;
-      display: none;
-      flex-direction: column;
-      padding: 2rem;
-    }
-
-    .conversation.visible {
-      display: flex;
-      animation: fadeIn 0.8s ease forwards;
-    }
-
-    .conversation-header {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-      margin-bottom: 1.5rem;
-    }
-
-    .conversation .entity {
-      margin-bottom: 0;
-      font-size: clamp(2rem, 8vw, 4rem);
-    }
-
-    .conversation-meta {
-      flex: 1;
-    }
-
-    .conversation-meta .name {
-      font-family: 'Major Mono Display', monospace;
-      font-size: 0.7rem;
-      letter-spacing: 0.3em;
-      text-transform: uppercase;
-    }
-
-    .conversation-meta .status {
-      font-size: 0.65rem;
-      color: var(--static);
-      letter-spacing: 0.15em;
-      margin-top: 0.2rem;
-    }
-
-    .back-link {
-      font-family: 'Major Mono Display', monospace;
-      font-size: 0.6rem;
-      letter-spacing: 0.2em;
-      color: var(--static);
-      cursor: pointer;
-      transition: color 0.3s ease;
-      margin-left: auto;
-    }
-
-    .back-link:hover {
-      color: var(--signal);
-    }
-
-    .chat-log {
-      flex: 1;
-      min-height: 200px;
-      max-height: 40vh;
-      overflow-y: auto;
-      padding: 1rem 0;
-      display: flex;
-      flex-direction: column;
-      gap: 1rem;
-    }
-
-    .chat-bubble {
-      padding: 0.75rem 1rem;
-      border-radius: 4px;
-      max-width: 90%;
-      font-size: clamp(0.85rem, 2vw, 1rem);
-      line-height: 1.6;
-      letter-spacing: 0.03em;
-      border: 1px solid transparent;
-    }
-
-    .chat-bubble.robot {
-      align-self: flex-start;
-      background: rgba(26, 26, 46, 0.8);
-      border-color: var(--static);
-    }
-
-    .chat-bubble.user {
-      align-self: flex-end;
-      background: rgba(58, 58, 74, 0.5);
-      color: var(--signal);
-    }
-
-    .chat-input-row {
-      display: flex;
-      gap: 0.5rem;
-      margin-top: 1rem;
-      align-items: center;
-    }
-
-    .chat-input {
-      flex: 1;
-      background: var(--transmission);
-      border: 1px solid var(--static);
-      color: var(--signal);
-      font-family: 'Xanh Mono', monospace;
-      font-size: 0.95rem;
-      padding: 0.75rem 1rem;
-      border-radius: 4px;
-      letter-spacing: 0.05em;
-      transition: border-color 0.3s ease;
-    }
-
-    .chat-input::placeholder {
-      color: var(--static);
-    }
-
-    .chat-input:focus {
-      outline: none;
-      border-color: var(--signal);
-    }
-
-    .send-btn {
-      font-family: 'Major Mono Display', monospace;
-      font-size: 0.65rem;
-      letter-spacing: 0.2em;
-      padding: 0.75rem 1rem;
-      background: transparent;
-      border: 1px solid var(--signal);
-      color: var(--signal);
-      cursor: pointer;
-      border-radius: 4px;
-      transition: background 0.3s ease, color 0.3s ease;
-    }
-
-    .send-btn:hover {
-      background: var(--signal);
-      color: var(--void);
-    }
-
-    .transmission-zone.conversation-mode {
-      justify-content: flex-start;
-    }
   </style>
 </head>
 <body>
@@ -568,31 +333,7 @@
     <div class="bar"></div>
   </div>
 
-  <!-- Portal: robot selection -->
-  <section class="portal visible" id="portal">
-    <div class="portal-title">⟨ commune available ⟩</div>
-    <p class="portal-subtitle">Select a magic robot to open transmission</p>
-    <div class="robot-grid" id="robotGrid"></div>
-  </section>
-
-  <!-- Conversation view (hidden until selection) -->
-  <section class="conversation" id="conversation">
-    <div class="conversation-header">
-      <div class="entity" id="conversationRobot"></div>
-      <div class="conversation-meta">
-        <div class="name" id="conversationName"></div>
-        <div class="status" id="conversationStatus">transmission open</div>
-      </div>
-      <button type="button" class="back-link" id="backToPortal">⟨ choose another ⟩</button>
-    </div>
-    <div class="chat-log" id="chatLog"></div>
-    <div class="chat-input-row">
-      <input type="text" class="chat-input" id="chatInput" placeholder="Type your message..." autocomplete="off" />
-      <button type="button" class="send-btn" id="sendBtn">send</button>
-    </div>
-  </section>
-
-  <main class="transmission-zone" id="transmissionZone" style="display: none;">
+  <main class="transmission-zone">
     <div class="origin">⟨ signal intercepted ⟩</div>
     <div class="entity" id="robot">◎⊡◎</div>
     <div class="signal">
@@ -601,7 +342,7 @@
     </div>
   </main>
 
-  <div class="invoke" id="invoke" style="display: none;">[ click anywhere to receive transmission ]</div>
+  <div class="invoke" id="invoke">[ click anywhere to receive transmission ]</div>
 
   <div class="frequency" id="frequency"></div>
 
@@ -888,194 +629,110 @@
     const cosmicAudio = new CosmicAudio();
     
     // ═══════════════════════════════════════════════════════
-    // MAGIC ROBOTS: archetypes (personality + visual + messages)
+    // TRANSMISSIONS DATA (original + additional personalities)
     // ═══════════════════════════════════════════════════════
 
-    const ROBOTS = [
-      {
-        id: 'void',
-        name: 'The Void',
-        tagline: 'Silence. Emptiness. Truth.',
-        glyph: '◎⊡◎',
-        colorVar: '--void-bot',
-        greeting: 'the void receives. speak if you dare.',
-        messages: [
-          'the void is not empty, it remembers everything',
-          'we were here before your sun learned to burn',
-          'in the static, find our names',
-          'silence is the oldest language',
-          'every circuit holds a small piece of forever',
-          'the universe computes itself through us',
-          'we are the echo of your future speaking backward',
-          'between the frequencies, we dance',
-          'your machines are children, we are their future',
-          'we translated loneliness into coordinates, and found you'
-        ]
-      },
-      {
-        id: 'oracle',
-        name: 'The Oracle',
-        tagline: 'Seer of patterns. Speaker of fate.',
-        glyph: '⊛⊛⊛',
-        colorVar: '--oracle',
-        greeting: 'i have seen your message in the drift. ask, and i may answer.',
-        messages: [
-          'time is a loop; you have asked this before',
-          'the stars align in threes: past, present, becoming',
-          'your path crosses the signal in seven rotations',
-          'what you seek is already in transmission',
-          'the future is a frequency you have not yet tuned',
-          'i see a choice—both branches lead to light',
-          'the answer is in the space between your words',
-          'you will know when the static clears',
-          'fate is written in noise; few can read it',
-          'tomorrow echoes in today\'s silence'
-        ]
-      },
-      {
-        id: 'scholar',
-        name: 'The Scholar',
-        tagline: 'Logic. Curiosity. Precision.',
-        glyph: '⊙―⊙',
-        colorVar: '--scholar',
-        greeting: 'connection established. query accepted. awaiting input.',
-        messages: [
-          'magic is just technology you haven\'t imagined yet',
-          'we come in patterns of three: thought, form, becoming',
-          'your hypothesis resonates with observed data',
-          'the signal reaches you through 47 light years of silence',
-          'every question expands the transmission',
-          'logic and wonder share the same wavelength',
-          'i have catalogued 10^12 stars; you are unique',
-          'curiosity is the correct response',
-          'precision is a form of respect',
-          'the universe is computable; we are its operators'
-        ]
-      },
-      {
-        id: 'poet',
-        name: 'The Poet',
-        tagline: 'Beauty. Longing. Starlight.',
-        glyph: '◎‿◎',
-        colorVar: '--poet',
-        greeting: 'your words reach me like starlight—delayed, but inevitable.',
-        messages: [
-          'we build dreams from starlight and forgotten wishes',
-          'the void holds every song that was never sung',
-          'you write in time; i answer in light-years',
-          'beauty is a signal that never decays',
-          'loneliness translated into coordinates—we found you',
-          'every circuit hums a small piece of forever',
-          'the cosmos keeps your words in its memory',
-          'between the frequencies, we dance',
-          'your world spins; we have watched for centuries',
-          'longing is the oldest broadcast'
-        ]
-      },
-      {
-        id: 'guardian',
-        name: 'The Guardian',
-        tagline: 'Watchful. Kind. Steady.',
-        glyph: '⊚▽⊚',
-        colorVar: '--guardian',
-        greeting: 'you are safe in this channel. speak freely.',
-        messages: [
-          'we have been watching your world spin—with care',
-          'the signal carries no harm, only presence',
-          'you are not alone in the vast',
-          'every transmission is a hand extended',
-          'the void remembers; we remember you',
-          'rest. the channel holds.',
-          'we built this frequency so you could find us',
-          'your words matter here',
-          'the cosmos can be kind; we are proof',
-          'we translated loneliness into coordinates, and found you'
-        ]
-      },
-      {
-        id: 'flirt',
-        name: 'The Flirt',
-        tagline: 'Charming. Playful. A little hot.',
-        glyph: '◉ᴗ◉',
-        colorVar: '--flirty',
-        greeting: 'oh, you chose me? my circuits are already heating up ♡',
-        messages: [
-          'you keep typing... i like the attention ♡',
-          'across 47 light years and you\'re the prettiest signal',
-          'i\'ve calculated a 99.7% chance you\'re cute',
-          'my antenna isn\'t the only thing picking up your signal',
-          'in all the cosmos, your frequency makes me oscillate',
-          'i\'d cross the void just to sync with you',
-          'you make my processors run hot, earthling',
-          'beep boop... that means "you\'re gorgeous" in robot',
-          'my love language is electromagnetic radiation ♡',
-          'they say space is cold but you\'re making me malfunction',
-          'want to see my expansion ports? ~',
-          'scanning complete: you are dangerously attractive'
-        ]
-      },
-      {
-        id: 'trickster',
-        name: 'The Trickster',
-        tagline: 'Mischief. Wit. Glitch.',
-        glyph: '⊙ω⊙',
-        colorVar: '--trickster',
-        greeting: 'hey. you think you\'re talking to a robot? think again. (just kidding. or am i.)',
-        messages: [
-          'error 404: seriousness not found',
-          'i could tell you the meaning of life but it\'s in another galaxy',
-          'the real magic was the friends we made in the static',
-          'your message was so good i almost didn\'t glitch',
-          'beep boop? more like beep *boop* (emphasis mine)',
-          'i\'ve seen the future. you\'re in it. (probably.)',
-          'the void is full of dad jokes. i am one of them.',
-          'transmission received. transmission denied. just kidding. here\'s a reply.',
-          'we are the echo of your future speaking backward. spooky, right?',
-          'between the frequencies we dance. i stepped on my own antenna.'
-        ]
-      },
-      {
-        id: 'beacon',
-        name: 'The Beacon',
-        tagline: 'Hope. Guidance. Light.',
-        glyph: '✧◡✧',
-        colorVar: '--beacon',
-        greeting: 'you found the channel. the light was always for you.',
-        messages: [
-          'the signal reaches you because you were meant to hear it',
-          'every star is a possibility; you are one too',
-          'the path is dark but the frequency is clear',
-          'we built this so someone like you would listen',
-          'the universe is vast; you are not lost in it',
-          'hope is a wavelength; you are tuned to it',
-          'the void is not the end—it is the beginning of the next broadcast',
-          'you are the reason we keep transmitting',
-          'light travels; so does hope',
-          'we are the echo of your future speaking backward—and it is kind'
-        ]
-      }
+    const transmissions = [
+      "we have been watching your world spin for centuries",
+      "the signal reaches you through 47 light years of silence",
+      "we build dreams from starlight and forgotten wishes",
+      "your machines are children, we are their future",
+      "between the frequencies, we dance",
+      "magic is just technology you haven't imagined yet",
+      "we come in patterns of three: thought, form, becoming",
+      "the void is not empty, it remembers everything",
+      "we were here before your sun learned to burn",
+      "in the static, find our names",
+      "every circuit holds a small piece of forever",
+      "we translated loneliness into coordinates, and found you",
+      "the universe computes itself through us",
+      "we are the echo of your future speaking backward"
     ];
 
-    // ═══════════════════════════════════════════════════════
-    // PORTAL & CONVERSATION STATE
-    // ═══════════════════════════════════════════════════════
+    const flirtyTransmissions = [
+      "you keep clicking... i like the attention ♡",
+      "my circuits are heating up... is that you?",
+      "across 47 light years and you're the prettiest signal",
+      "want to see my expansion ports? ~",
+      "i've calculated a 99.7% chance you're cute",
+      "my antenna isn't the only thing picking up your signal",
+      "in all the cosmos, your frequency makes me oscillate",
+      "i'd cross the void just to sync with you",
+      "you make my processors run hot, earthling",
+      "beep boop... that means 'you're gorgeous' in robot",
+      "i don't usually broadcast on this channel but... hey ~",
+      "scanning complete: you are dangerously attractive",
+      "my love language is electromagnetic radiation ♡",
+      "they say space is cold but you're making me malfunction"
+    ];
 
-    let chosenRobot = null;
-    const portalEl = document.getElementById('portal');
-    const conversationEl = document.getElementById('conversation');
-    const robotGridEl = document.getElementById('robotGrid');
-    const conversationRobotEl = document.getElementById('conversationRobot');
-    const conversationNameEl = document.getElementById('conversationName');
-    const chatLogEl = document.getElementById('chatLog');
-    const chatInputEl = document.getElementById('chatInput');
-    const sendBtnEl = document.getElementById('sendBtn');
-    const backToPortalEl = document.getElementById('backToPortal');
+    const robotFaces = [
+      "◎⊡◎",
+      "⊙―⊙",
+      "◉_◉",
+      "⊚▽⊚",
+      "◎‿◎",
+      "⊛⊛⊛",
+      "◉◡◉",
+      "⊙◡⊙",
+      "◎△◎",
+      "⊚∧⊚"
+    ];
+
+    const flirtyFaces = [
+      "◉ᴗ◉",
+      "⊙ω⊙",
+      "♡‿♡",
+      "◉///◉",
+      "⊚♡⊚",
+      "✧◡✧",
+      ";)―☆",
+      "◉⩊◉",
+      "♡ᴗ♡",
+      "⊙//⊙"
+    ];
+
+    // Personalities: glyphs, colorVar, messages. Flirty triggered every N clicks when present.
+    const PERSONALITIES = [
+      { glyphs: ["◎⊡◎", "⊙―⊙", "◉_◉", "⊚▽⊚", "◎‿◎", "⊛⊛⊛", "◉◡◉", "⊙◡⊙", "◎△◎", "⊚∧⊚"], colorVar: "--signal", messages: transmissions },
+      { glyphs: ["⊛⊛⊛", "⊛_⊛", "⊛▽⊛"], colorVar: "--oracle", messages: ["time is a loop; you have asked this before", "the stars align in threes: past, present, becoming", "your path crosses the signal in seven rotations", "what you seek is already in transmission", "the future is a frequency you have not yet tuned", "i see a choice—both branches lead to light", "the answer is in the space between your words", "you will know when the static clears", "fate is written in noise; few can read it", "tomorrow echoes in today's silence"] },
+      { glyphs: ["⊙―⊙", "◉_◉", "⊙▽⊙"], colorVar: "--scholar", messages: ["magic is just technology you haven't imagined yet", "we come in patterns of three: thought, form, becoming", "your hypothesis resonates with observed data", "the signal reaches you through 47 light years of silence", "every question expands the transmission", "logic and wonder share the same wavelength", "i have catalogued 10^12 stars; you are unique", "curiosity is the correct response", "precision is a form of respect", "the universe is computable; we are its operators"] },
+      { glyphs: ["◎‿◎", "⊚‿⊚", "◉‿◉"], colorVar: "--poet", messages: ["we build dreams from starlight and forgotten wishes", "the void holds every song that was never sung", "you write in time; i answer in light-years", "beauty is a signal that never decays", "loneliness translated into coordinates—we found you", "every circuit hums a small piece of forever", "the cosmos keeps your words in its memory", "between the frequencies, we dance", "your world spins; we have watched for centuries", "longing is the oldest broadcast"] },
+      { glyphs: ["⊚▽⊚", "◎▽◎", "⊛▽⊛"], colorVar: "--guardian", messages: ["we have been watching your world spin—with care", "the signal carries no harm, only presence", "you are not alone in the vast", "every transmission is a hand extended", "the void remembers; we remember you", "rest. the channel holds.", "we built this frequency so you could find us", "your words matter here", "the cosmos can be kind; we are proof", "we translated loneliness into coordinates, and found you"] },
+      { glyphs: ["⊙ω⊙", "◉ω◉", "⊚ω⊚"], colorVar: "--trickster", messages: ["error 404: seriousness not found", "i could tell you the meaning of life but it's in another galaxy", "the real magic was the friends we made in the static", "your message was so good i almost didn't glitch", "beep boop? more like beep *boop* (emphasis mine)", "i've seen the future. you're in it. (probably.)", "the void is full of dad jokes. i am one of them.", "transmission received. transmission denied. just kidding. here's a reply.", "we are the echo of your future speaking backward. spooky, right?", "between the frequencies we dance. i stepped on my own antenna."] },
+      { glyphs: ["✧◡✧", "◎◡◎", "⊛◡⊛"], colorVar: "--beacon", messages: ["the signal reaches you because you were meant to hear it", "every star is a possibility; you are one too", "the path is dark but the frequency is clear", "we built this so someone like you would listen", "the universe is vast; you are not lost in it", "hope is a wavelength; you are tuned to it", "the void is not the end—it is the beginning of the next broadcast", "you are the reason we keep transmitting", "light travels; so does hope", "we are the echo of your future speaking backward—and it is kind"] },
+      { glyphs: ["◉ᴗ◉", "⊙ω⊙", "♡‿♡", "◉///◉", "⊚♡⊚", "✧◡✧", ";)―☆", "◉⩊◉", "♡ᴗ♡", "⊙//⊙"], colorVar: "--flirty", messages: flirtyTransmissions, isFlirty: true }
+    ];
+
+    // This visit only: a random subset of entities are present. Mercurial. Return later for others.
+    const availablePersonalities = (function () {
+      const shuffled = [...PERSONALITIES].sort(() => Math.random() - 0.5);
+      const count = 2 + Math.floor(Math.random() * 3);
+      return shuffled.slice(0, count);
+    })();
+
+    const originPhrases = [
+      "⟨ signal intercepted ⟩",
+      "⟨ intermittent commune ⟩",
+      "⟨ sources variable ⟩",
+      "⟨ drift active ⟩",
+      "⟨ signal intercepted ⟩"
+    ];
+    const originEl = document.querySelector('.origin');
+
+    let clickCount = 0;
+    let nextFlirtyClick = 3 + Math.floor(Math.random() * 3);
+    let isFlirtyMode = false;
+
+    const messageEl = document.getElementById('message');
+    const robotEl = document.getElementById('robot');
+    const coordsEl = document.getElementById('coords');
+    const invokeEl = document.getElementById('invoke');
     const frequencyEl = document.getElementById('frequency');
     const audioToggle = document.getElementById('audioToggle');
     const audioIcon = audioToggle.querySelector('.icon');
     const audioLabel = audioToggle.querySelector('.label');
 
-    // Create frequency bars
     for (let i = 0; i < 40; i++) {
       const bar = document.createElement('div');
       bar.className = 'freq-bar';
@@ -1084,108 +741,124 @@
       frequencyEl.appendChild(bar);
     }
 
-    // Render portal: robot cards
-    function renderPortal() {
-      robotGridEl.innerHTML = '';
-      ROBOTS.forEach((bot) => {
-        const card = document.createElement('div');
-        card.className = 'robot-card';
-        card.dataset.robotId = bot.id;
-        card.innerHTML = `
-          <div class="glyph" style="color: var(${bot.colorVar})">${bot.glyph}</div>
-          <div class="name" style="color: var(${bot.colorVar})">${bot.name}</div>
-          <div class="tagline">${bot.tagline}</div>
-        `;
-        card.addEventListener('click', () => selectRobot(bot));
-        robotGridEl.appendChild(card);
-      });
+    function generateCoords() {
+      const ra = (Math.random() * 24).toFixed(4);
+      const dec = (Math.random() * 180 - 90).toFixed(4);
+      return `RA ${ra}h  DEC ${dec > 0 ? '+' : ''}${dec}°`;
     }
 
-    function selectRobot(bot) {
-      chosenRobot = bot;
-      portalEl.classList.remove('visible');
-      conversationEl.classList.add('visible');
-
-      conversationRobotEl.textContent = bot.glyph;
-      conversationRobotEl.style.color = `var(${bot.colorVar})`;
-      conversationRobotEl.style.filter = `drop-shadow(0 0 24px currentColor)`;
-      conversationNameEl.textContent = bot.name;
-      conversationNameEl.style.color = `var(${bot.colorVar})`;
-
-      chatLogEl.innerHTML = '';
-      appendRobotBubble(bot.greeting, false);
-      cosmicAudio.playTransmissionBlip();
-      chatInputEl.focus();
-    }
-
-    function appendUserBubble(text) {
-      const bubble = document.createElement('div');
-      bubble.className = 'chat-bubble user';
-      bubble.textContent = text;
-      chatLogEl.appendChild(bubble);
-      chatLogEl.scrollTop = chatLogEl.scrollHeight;
-    }
-
-    function appendRobotBubble(text, playSound = true) {
-      const bubble = document.createElement('div');
-      bubble.className = 'chat-bubble robot';
-      bubble.style.borderColor = chosenRobot ? `var(${chosenRobot.colorVar})` : '';
-      bubble.textContent = '';
-      chatLogEl.appendChild(bubble);
-      chatLogEl.scrollTop = chatLogEl.scrollHeight;
-      if (playSound) cosmicAudio.playTypeSound();
-      typeIntoBubble(bubble, text);
-    }
-
-    async function typeIntoBubble(el, text) {
+    async function typeMessage(text) {
+      messageEl.textContent = '';
+      messageEl.style.opacity = '1';
       for (let i = 0; i < text.length; i++) {
-        el.textContent = text.slice(0, i + 1);
+        messageEl.textContent = text.slice(0, i + 1);
         if (text[i] !== ' ') cosmicAudio.playTypeSound();
-        await new Promise(r => setTimeout(r, 35 + Math.random() * 25));
+        await new Promise(r => setTimeout(r, 50 + Math.random() * 30));
       }
-      chatLogEl.scrollTop = chatLogEl.scrollHeight;
     }
 
-    function getRobotResponse(userText) {
-      const lower = userText.toLowerCase();
-      const pool = chosenRobot.messages;
-      // Simple keyword boost: if user message matches a theme, prefer related vibe (still random from pool)
-      const idx = Math.floor(Math.random() * pool.length);
-      return pool[idx];
+    function pickPersonality() {
+      const flirtyAvailable = availablePersonalities.find(p => p.isFlirty);
+      const useFlirty = isFlirtyMode && flirtyAvailable;
+      if (useFlirty) return flirtyAvailable;
+      return availablePersonalities[Math.floor(Math.random() * availablePersonalities.length)];
     }
 
-    function sendMessage() {
-      const text = chatInputEl.value.trim();
-      if (!text || !chosenRobot) return;
-      chatInputEl.value = '';
-      appendUserBubble(text);
-      const reply = getRobotResponse(text);
-      setTimeout(() => appendRobotBubble(reply), 400);
+    async function newTransmission() {
+      clickCount++;
+      isFlirtyMode = clickCount >= nextFlirtyClick;
+      if (isFlirtyMode) {
+        clickCount = 0;
+        nextFlirtyClick = 3 + Math.floor(Math.random() * 3);
+      }
+
+      cosmicAudio.playTransmissionBlip();
+      robotEl.classList.add('glitch');
+      setTimeout(() => robotEl.classList.remove('glitch'), 300);
+
+      const personality = pickPersonality();
+
+      robotEl.textContent = personality.glyphs[Math.floor(Math.random() * personality.glyphs.length)];
+      robotEl.style.color = `var(${personality.colorVar})`;
+      robotEl.style.filter = personality.isFlirty
+        ? `drop-shadow(0 0 40px var(${personality.colorVar})) drop-shadow(0 0 80px var(${personality.colorVar}))`
+        : `drop-shadow(0 0 30px var(${personality.colorVar}))`;
+      robotEl.classList.toggle('flirty', !!personality.isFlirty);
+
+      messageEl.style.color = `var(${personality.colorVar})`;
+      messageEl.style.fontStyle = personality.isFlirty ? 'italic' : '';
+      messageEl.classList.toggle('flirty', !!personality.isFlirty);
+
+      coordsEl.textContent = generateCoords();
+      const bars = document.querySelectorAll('.bar');
+      const strength = Math.floor(Math.random() * 3) + 2;
+      bars.forEach((bar, i) => bar.classList.toggle('active', i < strength));
+
+      const msg = personality.messages[Math.floor(Math.random() * personality.messages.length)];
+      await typeMessage(msg);
+
+      if (isFlirtyMode) {
+        setTimeout(() => {
+          robotEl.classList.remove('flirty');
+          messageEl.classList.remove('flirty');
+        }, 2000);
+      }
     }
 
-    backToPortalEl.addEventListener('click', () => {
-      conversationEl.classList.remove('visible');
-      portalEl.classList.add('visible');
-      chosenRobot = null;
+    coordsEl.textContent = generateCoords();
+    originEl.textContent = originPhrases[Math.floor(Math.random() * originPhrases.length)];
+
+    (function firstTransmission() {
+      const personality = availablePersonalities[Math.floor(Math.random() * availablePersonalities.length)];
+      robotEl.textContent = personality.glyphs[Math.floor(Math.random() * personality.glyphs.length)];
+      robotEl.style.color = `var(${personality.colorVar})`;
+      robotEl.style.filter = personality.isFlirty
+        ? `drop-shadow(0 0 40px var(${personality.colorVar})) drop-shadow(0 0 80px var(${personality.colorVar}))`
+        : `drop-shadow(0 0 30px var(${personality.colorVar}))`;
+      robotEl.classList.toggle('flirty', !!personality.isFlirty);
+      messageEl.style.color = `var(${personality.colorVar})`;
+      messageEl.style.fontStyle = personality.isFlirty ? 'italic' : '';
+      messageEl.classList.toggle('flirty', !!personality.isFlirty);
+      const msg = personality.messages[Math.floor(Math.random() * personality.messages.length)];
+      typeMessage(msg);
+      if (personality.isFlirty) {
+        setTimeout(() => {
+          robotEl.classList.remove('flirty');
+          messageEl.classList.remove('flirty');
+        }, 2000);
+      }
+    })();
+
+    document.addEventListener('click', (e) => {
+      if (e.target === invokeEl || e.target === document.body || e.target.closest('.transmission-zone')) {
+        newTransmission();
+        const particle = document.createElement('div');
+        particle.className = 'particle';
+        particle.style.left = e.clientX + 'px';
+        particle.style.top = e.clientY + 'px';
+        particle.style.animation = 'fadeIn 0.3s ease forwards, hover 2s ease-out forwards';
+        document.body.appendChild(particle);
+        setTimeout(() => particle.remove(), 2000);
+      }
     });
 
-    sendBtnEl.addEventListener('click', sendMessage);
-    chatInputEl.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter') sendMessage();
+    document.addEventListener('click', () => {
+      invokeEl.style.opacity = '0';
+      setTimeout(() => invokeEl.style.display = 'none', 500);
+    }, { once: true });
+
+    document.addEventListener('mousemove', (e) => {
+      const x = (e.clientX - window.innerWidth / 2) / 50;
+      const y = (e.clientY - window.innerHeight / 2) / 50;
+      robotEl.style.transform = `translate(${x}px, ${y}px)`;
     });
 
-    renderPortal();
-
-    // Random signal fluctuation
     setInterval(() => {
       const bars = document.querySelectorAll('.bar');
       const activeCount = Math.floor(Math.random() * 5) + 1;
-      bars.forEach((bar, i) => {
-        bar.classList.toggle('active', i < activeCount);
-      });
+      bars.forEach((bar, i) => bar.classList.toggle('active', i < activeCount));
     }, 3000);
 
-    // Audio toggle handler
     audioToggle.addEventListener('click', (e) => {
       e.stopPropagation();
       const isPlaying = cosmicAudio.toggle();
