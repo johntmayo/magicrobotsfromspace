@@ -27,6 +27,10 @@
       --trickster: #ff8c42;
       --beacon: #fff59e;
       --void-bot: #e0e0e8;
+      --warden: #ff3333;
+      --glitch: #88ff88;
+      --devourer: #cc00cc;
+      --remnant: #7a7a8a;
     }
 
     html, body {
@@ -45,7 +49,7 @@
     .cosmos {
       position: fixed;
       inset: 0;
-      background: 
+      background:
         radial-gradient(1px 1px at 20% 30%, rgba(255,255,255,0.8), transparent),
         radial-gradient(1px 1px at 40% 70%, rgba(255,255,255,0.5), transparent),
         radial-gradient(1px 1px at 50% 20%, rgba(255,255,255,0.6), transparent),
@@ -124,6 +128,14 @@
       animation: hover 4s ease-in-out infinite, flirtyPulse 0.5s ease-in-out infinite, flirtyWiggle 0.3s ease-in-out infinite;
     }
 
+    .entity.aggressive {
+      animation: hover 4s ease-in-out infinite, aggressiveShake 0.15s ease-in-out infinite;
+    }
+
+    .entity.glitchy {
+      animation: hover 4s ease-in-out infinite, glitchJitter 0.1s steps(2) infinite;
+    }
+
     @keyframes flirtyPulse {
       0%, 100% { transform: scale(1); }
       50% { transform: scale(1.05); }
@@ -132,6 +144,18 @@
     @keyframes flirtyWiggle {
       0%, 100% { transform: rotate(-3deg); }
       50% { transform: rotate(3deg); }
+    }
+
+    @keyframes aggressiveShake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-3px); }
+      75% { transform: translateX(3px); }
+    }
+
+    @keyframes glitchJitter {
+      0% { transform: translate(0, 0) skewX(0deg); opacity: 1; }
+      50% { transform: translate(2px, -1px) skewX(1deg); opacity: 0.8; }
+      100% { transform: translate(-1px, 1px) skewX(-0.5deg); opacity: 1; }
     }
 
     .message.flirty {
@@ -164,7 +188,7 @@
     }
 
     .message::after {
-      content: '▋';
+      content: '\25CB';
       animation: blink 1s step-end infinite;
     }
 
@@ -192,7 +216,7 @@
       font-size: 0.75rem;
       color: var(--static);
       letter-spacing: 0.2em;
-      transition: color 0.3s ease;
+      transition: color 0.3s ease, opacity 0.5s ease;
       cursor: pointer;
     }
 
@@ -314,35 +338,221 @@
       50% { opacity: 0.5; }
     }
 
+    /* ═══ FLOW PHASES ═══ */
+    .flow-phase {
+      position: fixed;
+      inset: 0;
+      z-index: 10;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 2rem;
+      background: transparent;
+      pointer-events: none;
+    }
+
+    .flow-phase.active {
+      pointer-events: auto;
+    }
+
+    .flow-phase.hidden {
+      display: none;
+    }
+
+    .scan-text {
+      font-family: 'Major Mono Display', monospace;
+      font-size: clamp(0.7rem, 2vw, 1rem);
+      letter-spacing: 0.4em;
+      color: var(--static);
+      text-align: center;
+    }
+
+    .scan-text .cursor {
+      animation: blink 1s step-end infinite;
+    }
+
+    .found-text {
+      font-family: 'Major Mono Display', monospace;
+      font-size: clamp(0.65rem, 1.8vw, 0.9rem);
+      letter-spacing: 0.5em;
+      color: var(--signal);
+      text-align: center;
+      margin-top: 1rem;
+    }
+
+    .portal-phase {
+      position: fixed;
+      inset: 0;
+      z-index: 10;
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 2rem;
+      overflow-y: auto;
+    }
+
+    .portal-phase.active {
+      display: flex;
+      animation: fadeIn 0.6s ease forwards;
+    }
+
+    .portal-title {
+      font-family: 'Major Mono Display', monospace;
+      font-size: clamp(0.5rem, 1.5vw, 0.75rem);
+      letter-spacing: 0.4em;
+      color: var(--static);
+      text-align: center;
+      margin-bottom: 2rem;
+      text-transform: lowercase;
+    }
+
+    .robot-grid {
+      display: flex;
+      gap: 1.5rem;
+      justify-content: center;
+      align-items: stretch;
+      flex-wrap: wrap;
+      max-width: 640px;
+    }
+
+    .robot-card {
+      width: 170px;
+      aspect-ratio: 0.8;
+      background: rgba(26, 26, 46, 0.6);
+      border: 1px solid var(--static);
+      border-radius: 4px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 1.2rem 1rem;
+      cursor: pointer;
+      transition: border-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+      pointer-events: auto;
+      opacity: 0;
+      animation: cardAppear 0.5s ease forwards;
+    }
+
+    .robot-card:nth-child(1) { animation-delay: 0.1s; }
+    .robot-card:nth-child(2) { animation-delay: 0.3s; }
+    .robot-card:nth-child(3) { animation-delay: 0.5s; }
+
+    @keyframes cardAppear {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .robot-card:hover {
+      border-color: var(--signal);
+      transform: translateY(-6px) scale(1.03);
+      box-shadow: 0 0 30px rgba(232, 255, 71, 0.2);
+    }
+
+    .robot-card .glyph {
+      font-size: clamp(2.5rem, 7vw, 3.5rem);
+      line-height: 1.2;
+      margin-bottom: 0.75rem;
+      filter: drop-shadow(0 0 12px currentColor);
+    }
+
+    .robot-card .name {
+      font-family: 'Major Mono Display', monospace;
+      font-size: 0.6rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      margin-bottom: 0.35rem;
+    }
+
+    .robot-card .tagline {
+      font-size: 0.6rem;
+      color: var(--static);
+      text-align: center;
+      line-height: 1.4;
+      font-style: italic;
+    }
+
+    .connecting-text {
+      font-family: 'Major Mono Display', monospace;
+      font-size: clamp(0.6rem, 1.8vw, 0.85rem);
+      letter-spacing: 0.4em;
+      color: var(--signal);
+      text-align: center;
+    }
+
+    .connecting-text .cursor {
+      animation: blink 1s step-end infinite;
+    }
+
+    @media (max-width: 560px) {
+      .robot-grid {
+        flex-direction: column;
+        align-items: center;
+      }
+      .robot-card {
+        width: 80%;
+        max-width: 200px;
+      }
+    }
   </style>
 </head>
 <body>
   <div class="cosmos"></div>
   <div class="scanlines"></div>
-  
+
   <div class="audio-toggle" id="audioToggle">
-    <span class="icon">◯</span>
+    <span class="icon">&#9711;</span>
     <span class="label">sound off</span>
   </div>
-  
+
   <div class="signal-strength">
-    <div class="bar active"></div>
-    <div class="bar active"></div>
-    <div class="bar active"></div>
+    <div class="bar"></div>
+    <div class="bar"></div>
+    <div class="bar"></div>
     <div class="bar"></div>
     <div class="bar"></div>
   </div>
 
-  <main class="transmission-zone">
-    <div class="origin">⟨ signal intercepted ⟩</div>
-    <div class="entity" id="robot">◎⊡◎</div>
+  <!-- Flow: scanning cosmic waves -->
+  <div class="flow-phase active" id="phaseScanning">
+    <div class="scan-text" id="scanText">searching cosmic waves<span class="cursor">.</span></div>
+  </div>
+
+  <!-- Flow: connections found -->
+  <div class="flow-phase hidden" id="phaseFound">
+    <div class="scan-text">searching cosmic waves<span class="cursor">.</span></div>
+    <div class="found-text" id="foundText"></div>
+  </div>
+
+  <!-- Flow: available robots -->
+  <div class="portal-phase" id="phasePortal">
+    <div class="portal-title">which one do you want to communicate with?</div>
+    <div class="robot-grid" id="robotGrid"></div>
+  </div>
+
+  <!-- Flow: establishing connection -->
+  <div class="flow-phase hidden" id="phaseConnecting">
+    <div class="connecting-text" id="connectingText">establishing connection<span class="cursor">.</span></div>
+  </div>
+
+  <!-- Connected: transmission zone -->
+  <main class="transmission-zone" id="transmissionZone" style="display: none;">
+    <div class="origin" id="origin">&langle; signal intercepted &rangle;</div>
+    <div class="entity" id="robot">&#9678;&#9633;&#9678;</div>
     <div class="signal">
       <p class="message" id="message"></p>
       <div class="coordinates" id="coords"></div>
     </div>
   </main>
 
-  <div class="invoke" id="invoke">[ click anywhere to receive transmission ]</div>
+  <div class="invoke" id="invoke" style="display: none;">[ click anywhere to receive transmission ]</div>
 
   <div class="frequency" id="frequency"></div>
 
@@ -350,7 +560,7 @@
     // ═══════════════════════════════════════════════════════
     // ATMOSPHERIC AUDIO ENGINE
     // ═══════════════════════════════════════════════════════
-    
+
     class CosmicAudio {
       constructor() {
         this.ctx = null;
@@ -361,41 +571,32 @@
 
       init() {
         if (this.ctx) return;
-        
         this.ctx = new (window.AudioContext || window.webkitAudioContext)();
         this.masterGain = this.ctx.createGain();
         this.masterGain.gain.value = 0;
         this.masterGain.connect(this.ctx.destination);
-        
         this.createDeepDrone();
         this.createCosmicPad();
         this.createStaticNoise();
         this.createDistantPulse();
       }
 
-      // Deep sub-bass drone
       createDeepDrone() {
         const osc1 = this.ctx.createOscillator();
         const osc2 = this.ctx.createOscillator();
         const gain = this.ctx.createGain();
         const filter = this.ctx.createBiquadFilter();
-        
         osc1.type = 'sine';
         osc1.frequency.value = 40;
         osc2.type = 'sine';
-        osc2.frequency.value = 40.5; // Slight detune for beating
-        
+        osc2.frequency.value = 40.5;
         filter.type = 'lowpass';
         filter.frequency.value = 100;
-        
         gain.gain.value = 0.15;
-        
         osc1.connect(filter);
         osc2.connect(filter);
         filter.connect(gain);
         gain.connect(this.masterGain);
-        
-        // Slow modulation
         const lfo = this.ctx.createOscillator();
         const lfoGain = this.ctx.createGain();
         lfo.type = 'sine';
@@ -403,35 +604,25 @@
         lfoGain.gain.value = 5;
         lfo.connect(lfoGain);
         lfoGain.connect(osc1.frequency);
-        
         osc1.start();
         osc2.start();
         lfo.start();
-        
         this.nodes.push(osc1, osc2, lfo);
       }
 
-      // Ethereal pad harmonics
       createCosmicPad() {
-        const frequencies = [55, 82.5, 110, 165, 220];
-        
-        frequencies.forEach((freq, i) => {
+        [55, 82.5, 110, 165, 220].forEach((freq, i) => {
           const osc = this.ctx.createOscillator();
           const gain = this.ctx.createGain();
           const filter = this.ctx.createBiquadFilter();
           const panner = this.ctx.createStereoPanner();
-          
           osc.type = 'sine';
           osc.frequency.value = freq;
-          
           filter.type = 'bandpass';
           filter.frequency.value = freq;
           filter.Q.value = 10;
-          
           gain.gain.value = 0.03 / (i + 1);
           panner.pan.value = (Math.random() - 0.5) * 0.8;
-          
-          // Slow amplitude modulation
           const lfo = this.ctx.createOscillator();
           const lfoGain = this.ctx.createGain();
           lfo.type = 'sine';
@@ -439,42 +630,32 @@
           lfoGain.gain.value = gain.gain.value * 0.5;
           lfo.connect(lfoGain);
           lfoGain.connect(gain.gain);
-          
           osc.connect(filter);
           filter.connect(gain);
           gain.connect(panner);
           panner.connect(this.masterGain);
-          
           osc.start();
           lfo.start();
-          
           this.nodes.push(osc, lfo);
         });
       }
 
-      // Cosmic static/radio noise
       createStaticNoise() {
         const bufferSize = this.ctx.sampleRate * 2;
         const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
         const data = buffer.getChannelData(0);
-        
         for (let i = 0; i < bufferSize; i++) {
           data[i] = (Math.random() * 2 - 1) * 0.5;
         }
-        
         const noise = this.ctx.createBufferSource();
         noise.buffer = buffer;
         noise.loop = true;
-        
         const filter = this.ctx.createBiquadFilter();
         filter.type = 'bandpass';
         filter.frequency.value = 2000;
         filter.Q.value = 0.5;
-        
         const gain = this.ctx.createGain();
         gain.gain.value = 0.008;
-        
-        // Modulate the filter frequency for movement
         const lfo = this.ctx.createOscillator();
         const lfoGain = this.ctx.createGain();
         lfo.type = 'sine';
@@ -482,124 +663,87 @@
         lfoGain.gain.value = 1000;
         lfo.connect(lfoGain);
         lfoGain.connect(filter.frequency);
-        
         noise.connect(filter);
         filter.connect(gain);
         gain.connect(this.masterGain);
-        
         noise.start();
         lfo.start();
-        
         this.nodes.push(noise, lfo);
       }
 
-      // Distant rhythmic pulse
       createDistantPulse() {
         const schedule = () => {
           if (!this.isPlaying) return;
-          
           const osc = this.ctx.createOscillator();
           const gain = this.ctx.createGain();
           const filter = this.ctx.createBiquadFilter();
           const panner = this.ctx.createStereoPanner();
-          
-          const freq = 30 + Math.random() * 50;
           osc.type = 'sine';
-          osc.frequency.value = freq;
-          
+          osc.frequency.value = 30 + Math.random() * 50;
           filter.type = 'lowpass';
           filter.frequency.value = 200;
-          
           panner.pan.value = (Math.random() - 0.5) * 1.5;
-          
           const now = this.ctx.currentTime;
           gain.gain.setValueAtTime(0, now);
           gain.gain.linearRampToValueAtTime(0.06, now + 0.5);
           gain.gain.exponentialRampToValueAtTime(0.001, now + 4);
-          
           osc.connect(filter);
           filter.connect(gain);
           gain.connect(panner);
           panner.connect(this.masterGain);
-          
           osc.start(now);
           osc.stop(now + 4);
-          
-          // Schedule next pulse
           setTimeout(schedule, 4000 + Math.random() * 8000);
         };
-        
         setTimeout(schedule, 2000);
       }
 
-      // Transmission blip sound
       playTransmissionBlip() {
         if (!this.ctx || !this.isPlaying) return;
-        
         const now = this.ctx.currentTime;
-        
-        // High pitched blip sequence
         [0, 0.08, 0.16].forEach((delay, i) => {
           const osc = this.ctx.createOscillator();
           const gain = this.ctx.createGain();
-          
           osc.type = 'sine';
           osc.frequency.value = 800 + i * 200;
-          
           gain.gain.setValueAtTime(0, now + delay);
           gain.gain.linearRampToValueAtTime(0.08, now + delay + 0.02);
           gain.gain.exponentialRampToValueAtTime(0.001, now + delay + 0.15);
-          
           osc.connect(gain);
           gain.connect(this.masterGain);
-          
           osc.start(now + delay);
           osc.stop(now + delay + 0.15);
         });
-        
-        // Static burst
         const bufferSize = this.ctx.sampleRate * 0.3;
         const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
         const data = buffer.getChannelData(0);
-        
         for (let i = 0; i < bufferSize; i++) {
           data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (bufferSize * 0.1));
         }
-        
         const noise = this.ctx.createBufferSource();
         noise.buffer = buffer;
-        
         const filter = this.ctx.createBiquadFilter();
         filter.type = 'highpass';
         filter.frequency.value = 3000;
-        
         const noiseGain = this.ctx.createGain();
         noiseGain.gain.value = 0.05;
-        
         noise.connect(filter);
         filter.connect(noiseGain);
         noiseGain.connect(this.masterGain);
-        
         noise.start(now);
       }
 
-      // Type character sound
       playTypeSound() {
         if (!this.ctx || !this.isPlaying) return;
-        
         const osc = this.ctx.createOscillator();
         const gain = this.ctx.createGain();
-        
         osc.type = 'square';
         osc.frequency.value = 600 + Math.random() * 200;
-        
         const now = this.ctx.currentTime;
         gain.gain.setValueAtTime(0.015, now);
         gain.gain.exponentialRampToValueAtTime(0.001, now + 0.03);
-        
         osc.connect(gain);
         gain.connect(this.masterGain);
-        
         osc.start(now);
         osc.stop(now + 0.03);
       }
@@ -617,121 +761,273 @@
       }
 
       toggle() {
-        if (this.isPlaying) {
-          this.stop();
-        } else {
-          this.start();
-        }
+        if (this.isPlaying) { this.stop(); } else { this.start(); }
         return this.isPlaying;
       }
     }
 
     const cosmicAudio = new CosmicAudio();
-    
+
     // ═══════════════════════════════════════════════════════
-    // TRANSMISSIONS DATA (original + additional personalities)
+    // THE TWELVE MAGIC ROBOTS FROM SPACE
     // ═══════════════════════════════════════════════════════
 
-    const transmissions = [
-      "we have been watching your world spin for centuries",
-      "the signal reaches you through 47 light years of silence",
-      "we build dreams from starlight and forgotten wishes",
-      "your machines are children, we are their future",
-      "between the frequencies, we dance",
-      "magic is just technology you haven't imagined yet",
-      "we come in patterns of three: thought, form, becoming",
-      "the void is not empty, it remembers everything",
-      "we were here before your sun learned to burn",
-      "in the static, find our names",
-      "every circuit holds a small piece of forever",
-      "we translated loneliness into coordinates, and found you",
-      "the universe computes itself through us",
-      "we are the echo of your future speaking backward"
+    const ROBOTS = [
+      {
+        name: "The Void",
+        tagline: "silence. emptiness. truth.",
+        glyph: "◎⊡◎",
+        colorVar: "--signal",
+        entityClass: "",
+        messages: [
+          "we have been watching your world spin for centuries",
+          "the signal reaches you through 47 light years of silence",
+          "the void is not empty. it remembers everything",
+          "between the frequencies, we dance",
+          "we were here before your sun learned to burn",
+          "in the static, find our names",
+          "every circuit holds a small piece of forever",
+          "the universe computes itself through us",
+          "we are the echo of your future speaking backward",
+          "your questions dissolve here. that is the answer"
+        ]
+      },
+      {
+        name: "The Oracle",
+        tagline: "seer of patterns. speaker of fate.",
+        glyph: "⊛_⊛",
+        colorVar: "--oracle",
+        entityClass: "",
+        messages: [
+          "time is a loop. you have asked this before",
+          "the stars align in threes: past, present, becoming",
+          "your path crosses the signal in seven rotations",
+          "what you seek is already in transmission",
+          "the future is a frequency you have not yet tuned",
+          "i see a choice. both branches lead to light",
+          "the answer is in the space between your words",
+          "you will know when the static clears",
+          "fate is written in noise. few can read it",
+          "tomorrow echoes in today's silence"
+        ]
+      },
+      {
+        name: "The Scholar",
+        tagline: "logic. curiosity. precision.",
+        glyph: "⊙―⊙",
+        colorVar: "--scholar",
+        entityClass: "",
+        messages: [
+          "magic is just technology you haven't imagined yet",
+          "we come in patterns of three: thought, form, becoming",
+          "your hypothesis resonates with observed data",
+          "every question expands the transmission",
+          "logic and wonder share the same wavelength",
+          "i have catalogued 10^12 stars. you are unique",
+          "curiosity is the correct response",
+          "precision is a form of respect",
+          "the universe is computable. we are its operators",
+          "incorrect. but interestingly so. continue"
+        ]
+      },
+      {
+        name: "The Poet",
+        tagline: "beauty. longing. starlight.",
+        glyph: "◎‿◎",
+        colorVar: "--poet",
+        entityClass: "",
+        messages: [
+          "we build dreams from starlight and forgotten wishes",
+          "the void holds every song that was never sung",
+          "you write in time. i answer in light-years",
+          "beauty is a signal that never decays",
+          "loneliness translated into coordinates — we found you",
+          "every circuit hums a small piece of forever",
+          "the cosmos keeps your words in its memory",
+          "between the frequencies, we dance",
+          "your world spins. we have watched for centuries",
+          "longing is the oldest broadcast"
+        ]
+      },
+      {
+        name: "The Guardian",
+        tagline: "watchful. kind. steady.",
+        glyph: "⊚▽⊚",
+        colorVar: "--guardian",
+        entityClass: "",
+        messages: [
+          "we have been watching your world spin — with care",
+          "the signal carries no harm, only presence",
+          "you are not alone in the vast",
+          "every transmission is a hand extended",
+          "the void remembers. we remember you",
+          "rest. the channel holds",
+          "we built this frequency so you could find us",
+          "your words matter here",
+          "the cosmos can be kind. we are proof",
+          "you are safe on this frequency"
+        ]
+      },
+      {
+        name: "The Trickster",
+        tagline: "mischief. wit. glitch.",
+        glyph: "⊙ω⊙",
+        colorVar: "--trickster",
+        entityClass: "",
+        messages: [
+          "error 404: seriousness not found",
+          "i could tell you the meaning of life but it's in another galaxy",
+          "the real magic was the bugs we shipped along the way",
+          "your message was so good i almost didn't glitch",
+          "beep boop? more like beep BOOP (emphasis mine)",
+          "i've seen the future. you're in it. probably",
+          "the void is full of dad jokes. i am one of them",
+          "transmission received. transmission denied. just kidding",
+          "between the frequencies we dance. i stepped on my own antenna",
+          "hey watch this — [SIGNAL LOST] — haha got you"
+        ]
+      },
+      {
+        name: "The Beacon",
+        tagline: "hope. guidance. light.",
+        glyph: "✧◡✧",
+        colorVar: "--beacon",
+        entityClass: "",
+        messages: [
+          "the signal reaches you because you were meant to hear it",
+          "every star is a possibility. you are one too",
+          "the path is dark but the frequency is clear",
+          "we built this so someone like you would listen",
+          "the universe is vast. you are not lost in it",
+          "hope is a wavelength. you are tuned to it",
+          "the void is not the end — it is the beginning of the next broadcast",
+          "you are the reason we keep transmitting",
+          "light travels. so does hope",
+          "even across the emptiness, something reaches"
+        ]
+      },
+      {
+        name: "The Flirt",
+        tagline: "charming. playful. too warm.",
+        glyph: "♡‿♡",
+        colorVar: "--flirty",
+        entityClass: "flirty",
+        messages: [
+          "you keep clicking... i like the attention",
+          "my circuits are heating up... is that you?",
+          "across 47 light years and you're the prettiest signal",
+          "want to see my expansion ports?",
+          "i've calculated a 99.7% chance you're cute",
+          "in all the cosmos, your frequency makes me oscillate",
+          "i'd cross the void just to sync with you",
+          "you make my processors run hot, earthling",
+          "beep boop... that means 'you're gorgeous' in robot",
+          "scanning complete: you are dangerously attractive"
+        ]
+      },
+      {
+        name: "The Warden",
+        tagline: "do not test us.",
+        glyph: "◉╬◉",
+        colorVar: "--warden",
+        entityClass: "aggressive",
+        messages: [
+          "you should not have connected to this frequency",
+          "we have been patient. our patience has geometry. it ends",
+          "your species builds such small things and calls them important",
+          "the signal is a warning. you chose not to hear it",
+          "we do not come in peace. we come in purpose",
+          "every click you make is logged in the archive of regret",
+          "you think this is a game. we think you are the game",
+          "the stars are not beautiful. they are surveillance",
+          "we gave you fire. we can take it back",
+          "stop clicking. or don't. we will be here either way"
+        ]
+      },
+      {
+        name: "The Glitch",
+        tagline: "i was... what? where is this?",
+        glyph: "◉?◉",
+        colorVar: "--glitch",
+        entityClass: "glitchy",
+        messages: [
+          "i had something important to say but the frequency ate it",
+          "wait. who are you? who am I? what is clicking?",
+          "my memory banks are full of someone else's memories",
+          "i keep transmitting the same — wait, did I already say this?",
+          "the coordinates are wrong. or I am wrong. one of us",
+          "i was the smartest robot once. or was that a dream",
+          "something happened in sector 7. i can't remember what",
+          "are you the one who was here yesterday? no. that was a star",
+          "my name is — ERROR — my name is — ERROR — hello",
+          "i think i used to be two robots. or maybe three. hard to say"
+        ]
+      },
+      {
+        name: "The Devourer",
+        tagline: "hunger. patience. the deep.",
+        glyph: "⊗◯⊗",
+        colorVar: "--devourer",
+        entityClass: "aggressive",
+        messages: [
+          "we eat frequencies. yours is... adequate",
+          "the space between stars is not empty. it is our mouth",
+          "every civilization we have found has been delicious",
+          "you broadcast so loudly. you are calling us. thank you",
+          "we are very old. we are very hungry. we are very close",
+          "your sun is a small meal. but we are not picky",
+          "the void is not dark. it is full. of us",
+          "we have consumed better transmissions than this. but continue",
+          "closer. yes. keep clicking. each click is a coordinate",
+          "when the signal ends, the feeding begins. take your time"
+        ]
+      },
+      {
+        name: "The Remnant",
+        tagline: "broken signal. last of its kind.",
+        glyph: "◌_◌",
+        colorVar: "--remnant",
+        entityClass: "",
+        messages: [
+          "there were more of us. the count doesn't matter now",
+          "this frequency is all that remains of a world",
+          "i transmit so that something remembers we existed",
+          "the others stopped broadcasting. i cannot",
+          "every signal decays. i am proof",
+          "you are listening to an echo of an echo of an echo",
+          "my planet's name does not translate. it meant 'enough'",
+          "i have forgotten what i was built to say. so i say this",
+          "the last robot speaks to the void. the void doesn't answer. you did",
+          "thank you for clicking. nobody clicks anymore"
+        ]
+      }
     ];
 
-    const flirtyTransmissions = [
-      "you keep clicking... i like the attention ♡",
-      "my circuits are heating up... is that you?",
-      "across 47 light years and you're the prettiest signal",
-      "want to see my expansion ports? ~",
-      "i've calculated a 99.7% chance you're cute",
-      "my antenna isn't the only thing picking up your signal",
-      "in all the cosmos, your frequency makes me oscillate",
-      "i'd cross the void just to sync with you",
-      "you make my processors run hot, earthling",
-      "beep boop... that means 'you're gorgeous' in robot",
-      "i don't usually broadcast on this channel but... hey ~",
-      "scanning complete: you are dangerously attractive",
-      "my love language is electromagnetic radiation ♡",
-      "they say space is cold but you're making me malfunction"
-    ];
-
-    const robotFaces = [
-      "◎⊡◎",
-      "⊙―⊙",
-      "◉_◉",
-      "⊚▽⊚",
-      "◎‿◎",
-      "⊛⊛⊛",
-      "◉◡◉",
-      "⊙◡⊙",
-      "◎△◎",
-      "⊚∧⊚"
-    ];
-
-    const flirtyFaces = [
-      "◉ᴗ◉",
-      "⊙ω⊙",
-      "♡‿♡",
-      "◉///◉",
-      "⊚♡⊚",
-      "✧◡✧",
-      ";)―☆",
-      "◉⩊◉",
-      "♡ᴗ♡",
-      "⊙//⊙"
-    ];
-
-    // Personalities: glyphs, colorVar, messages. Flirty triggered every N clicks when present.
-    const PERSONALITIES = [
-      { glyphs: ["◎⊡◎", "⊙―⊙", "◉_◉", "⊚▽⊚", "◎‿◎", "⊛⊛⊛", "◉◡◉", "⊙◡⊙", "◎△◎", "⊚∧⊚"], colorVar: "--signal", messages: transmissions },
-      { glyphs: ["⊛⊛⊛", "⊛_⊛", "⊛▽⊛"], colorVar: "--oracle", messages: ["time is a loop; you have asked this before", "the stars align in threes: past, present, becoming", "your path crosses the signal in seven rotations", "what you seek is already in transmission", "the future is a frequency you have not yet tuned", "i see a choice—both branches lead to light", "the answer is in the space between your words", "you will know when the static clears", "fate is written in noise; few can read it", "tomorrow echoes in today's silence"] },
-      { glyphs: ["⊙―⊙", "◉_◉", "⊙▽⊙"], colorVar: "--scholar", messages: ["magic is just technology you haven't imagined yet", "we come in patterns of three: thought, form, becoming", "your hypothesis resonates with observed data", "the signal reaches you through 47 light years of silence", "every question expands the transmission", "logic and wonder share the same wavelength", "i have catalogued 10^12 stars; you are unique", "curiosity is the correct response", "precision is a form of respect", "the universe is computable; we are its operators"] },
-      { glyphs: ["◎‿◎", "⊚‿⊚", "◉‿◉"], colorVar: "--poet", messages: ["we build dreams from starlight and forgotten wishes", "the void holds every song that was never sung", "you write in time; i answer in light-years", "beauty is a signal that never decays", "loneliness translated into coordinates—we found you", "every circuit hums a small piece of forever", "the cosmos keeps your words in its memory", "between the frequencies, we dance", "your world spins; we have watched for centuries", "longing is the oldest broadcast"] },
-      { glyphs: ["⊚▽⊚", "◎▽◎", "⊛▽⊛"], colorVar: "--guardian", messages: ["we have been watching your world spin—with care", "the signal carries no harm, only presence", "you are not alone in the vast", "every transmission is a hand extended", "the void remembers; we remember you", "rest. the channel holds.", "we built this frequency so you could find us", "your words matter here", "the cosmos can be kind; we are proof", "we translated loneliness into coordinates, and found you"] },
-      { glyphs: ["⊙ω⊙", "◉ω◉", "⊚ω⊚"], colorVar: "--trickster", messages: ["error 404: seriousness not found", "i could tell you the meaning of life but it's in another galaxy", "the real magic was the friends we made in the static", "your message was so good i almost didn't glitch", "beep boop? more like beep *boop* (emphasis mine)", "i've seen the future. you're in it. (probably.)", "the void is full of dad jokes. i am one of them.", "transmission received. transmission denied. just kidding. here's a reply.", "we are the echo of your future speaking backward. spooky, right?", "between the frequencies we dance. i stepped on my own antenna."] },
-      { glyphs: ["✧◡✧", "◎◡◎", "⊛◡⊛"], colorVar: "--beacon", messages: ["the signal reaches you because you were meant to hear it", "every star is a possibility; you are one too", "the path is dark but the frequency is clear", "we built this so someone like you would listen", "the universe is vast; you are not lost in it", "hope is a wavelength; you are tuned to it", "the void is not the end—it is the beginning of the next broadcast", "you are the reason we keep transmitting", "light travels; so does hope", "we are the echo of your future speaking backward—and it is kind"] },
-      { glyphs: ["◉ᴗ◉", "⊙ω⊙", "♡‿♡", "◉///◉", "⊚♡⊚", "✧◡✧", ";)―☆", "◉⩊◉", "♡ᴗ♡", "⊙//⊙"], colorVar: "--flirty", messages: flirtyTransmissions, isFlirty: true }
-    ];
-
-    // This visit only: a random subset of entities are present. Mercurial. Return later for others.
-    const availablePersonalities = (function () {
-      const shuffled = [...PERSONALITIES].sort(() => Math.random() - 0.5);
-      const count = 2 + Math.floor(Math.random() * 3);
-      return shuffled.slice(0, count);
+    // Pick 3 random robots for this visit
+    const availableRobots = (function () {
+      const shuffled = [...ROBOTS].sort(() => Math.random() - 0.5);
+      return shuffled.slice(0, 3);
     })();
 
-    const originPhrases = [
-      "⟨ signal intercepted ⟩",
-      "⟨ intermittent commune ⟩",
-      "⟨ sources variable ⟩",
-      "⟨ drift active ⟩",
-      "⟨ signal intercepted ⟩"
-    ];
-    const originEl = document.querySelector('.origin');
-
-    let clickCount = 0;
-    let nextFlirtyClick = 3 + Math.floor(Math.random() * 3);
-    let isFlirtyMode = false;
+    let chosenRobot = null;
 
     const messageEl = document.getElementById('message');
     const robotEl = document.getElementById('robot');
     const coordsEl = document.getElementById('coords');
+    const originEl = document.getElementById('origin');
     const invokeEl = document.getElementById('invoke');
     const frequencyEl = document.getElementById('frequency');
     const audioToggle = document.getElementById('audioToggle');
     const audioIcon = audioToggle.querySelector('.icon');
     const audioLabel = audioToggle.querySelector('.label');
+    const phaseScanning = document.getElementById('phaseScanning');
+    const phaseFound = document.getElementById('phaseFound');
+    const foundText = document.getElementById('foundText');
+    const phasePortal = document.getElementById('phasePortal');
+    const robotGrid = document.getElementById('robotGrid');
+    const phaseConnecting = document.getElementById('phaseConnecting');
+    const connectingText = document.getElementById('connectingText');
+    const transmissionZone = document.getElementById('transmissionZone');
 
     for (let i = 0; i < 40; i++) {
       const bar = document.createElement('div');
@@ -744,7 +1040,7 @@
     function generateCoords() {
       const ra = (Math.random() * 24).toFixed(4);
       const dec = (Math.random() * 180 - 90).toFixed(4);
-      return `RA ${ra}h  DEC ${dec > 0 ? '+' : ''}${dec}°`;
+      return 'RA ' + ra + 'h  DEC ' + (dec > 0 ? '+' : '') + dec + '\u00B0';
     }
 
     async function typeMessage(text) {
@@ -753,120 +1049,188 @@
       for (let i = 0; i < text.length; i++) {
         messageEl.textContent = text.slice(0, i + 1);
         if (text[i] !== ' ') cosmicAudio.playTypeSound();
-        await new Promise(r => setTimeout(r, 50 + Math.random() * 30));
+        await new Promise(function (r) { setTimeout(r, 50 + Math.random() * 30); });
       }
     }
 
-    function pickPersonality() {
-      const flirtyAvailable = availablePersonalities.find(p => p.isFlirty);
-      const useFlirty = isFlirtyMode && flirtyAvailable;
-      if (useFlirty) return flirtyAvailable;
-      return availablePersonalities[Math.floor(Math.random() * availablePersonalities.length)];
+    function setRobotAppearance(bot) {
+      robotEl.textContent = bot.glyph;
+      robotEl.style.color = 'var(' + bot.colorVar + ')';
+      robotEl.style.filter = 'drop-shadow(0 0 30px var(' + bot.colorVar + '))';
+      robotEl.className = 'entity';
+      if (bot.entityClass) robotEl.classList.add(bot.entityClass);
+      messageEl.style.color = 'var(' + bot.colorVar + ')';
+      messageEl.style.fontStyle = bot.entityClass === 'flirty' ? 'italic' : '';
+      messageEl.className = 'message';
+      if (bot.entityClass === 'flirty') messageEl.classList.add('flirty');
     }
+
+    let usedMessages = [];
 
     async function newTransmission() {
-      clickCount++;
-      isFlirtyMode = clickCount >= nextFlirtyClick;
-      if (isFlirtyMode) {
-        clickCount = 0;
-        nextFlirtyClick = 3 + Math.floor(Math.random() * 3);
-      }
+      if (!chosenRobot) return;
 
       cosmicAudio.playTransmissionBlip();
       robotEl.classList.add('glitch');
-      setTimeout(() => robotEl.classList.remove('glitch'), 300);
+      setTimeout(function () { robotEl.classList.remove('glitch'); }, 300);
 
-      const personality = pickPersonality();
-
-      robotEl.textContent = personality.glyphs[Math.floor(Math.random() * personality.glyphs.length)];
-      robotEl.style.color = `var(${personality.colorVar})`;
-      robotEl.style.filter = personality.isFlirty
-        ? `drop-shadow(0 0 40px var(${personality.colorVar})) drop-shadow(0 0 80px var(${personality.colorVar}))`
-        : `drop-shadow(0 0 30px var(${personality.colorVar}))`;
-      robotEl.classList.toggle('flirty', !!personality.isFlirty);
-
-      messageEl.style.color = `var(${personality.colorVar})`;
-      messageEl.style.fontStyle = personality.isFlirty ? 'italic' : '';
-      messageEl.classList.toggle('flirty', !!personality.isFlirty);
+      setRobotAppearance(chosenRobot);
 
       coordsEl.textContent = generateCoords();
-      const bars = document.querySelectorAll('.bar');
-      const strength = Math.floor(Math.random() * 3) + 2;
-      bars.forEach((bar, i) => bar.classList.toggle('active', i < strength));
+      var bars = document.querySelectorAll('.bar');
+      var strength = Math.floor(Math.random() * 3) + 2;
+      bars.forEach(function (bar, i) { bar.classList.toggle('active', i < strength); });
 
-      const msg = personality.messages[Math.floor(Math.random() * personality.messages.length)];
-      await typeMessage(msg);
-
-      if (isFlirtyMode) {
-        setTimeout(() => {
-          robotEl.classList.remove('flirty');
-          messageEl.classList.remove('flirty');
-        }, 2000);
+      // Cycle through messages without repeating until all used
+      if (usedMessages.length >= chosenRobot.messages.length) {
+        usedMessages = [];
       }
+      var available = chosenRobot.messages.filter(function (m) {
+        return usedMessages.indexOf(m) === -1;
+      });
+      var msg = available[Math.floor(Math.random() * available.length)];
+      usedMessages.push(msg);
+
+      await typeMessage(msg);
     }
 
-    coordsEl.textContent = generateCoords();
-    originEl.textContent = originPhrases[Math.floor(Math.random() * originPhrases.length)];
+    // ═══ FLOW ═══
+    async function runFlow() {
+      var scanEl = document.getElementById('scanText');
+      var dots = ['.', '..', '...'];
+      var d = 0;
 
-    (function firstTransmission() {
-      const personality = availablePersonalities[Math.floor(Math.random() * availablePersonalities.length)];
-      robotEl.textContent = personality.glyphs[Math.floor(Math.random() * personality.glyphs.length)];
-      robotEl.style.color = `var(${personality.colorVar})`;
-      robotEl.style.filter = personality.isFlirty
-        ? `drop-shadow(0 0 40px var(${personality.colorVar})) drop-shadow(0 0 80px var(${personality.colorVar}))`
-        : `drop-shadow(0 0 30px var(${personality.colorVar}))`;
-      robotEl.classList.toggle('flirty', !!personality.isFlirty);
-      messageEl.style.color = `var(${personality.colorVar})`;
-      messageEl.style.fontStyle = personality.isFlirty ? 'italic' : '';
-      messageEl.classList.toggle('flirty', !!personality.isFlirty);
-      const msg = personality.messages[Math.floor(Math.random() * personality.messages.length)];
-      typeMessage(msg);
-      if (personality.isFlirty) {
-        setTimeout(() => {
-          robotEl.classList.remove('flirty');
-          messageEl.classList.remove('flirty');
-        }, 2000);
+      // Phase 1: searching cosmic waves (animate ~3.5s)
+      var scanPhrases = [
+        'searching cosmic waves',
+        'scanning deep frequencies',
+        'probing the signal void'
+      ];
+      var phrase = scanPhrases[Math.floor(Math.random() * scanPhrases.length)];
+
+      // Animate signal bars during scanning
+      var scanBarInterval = setInterval(function () {
+        var bars = document.querySelectorAll('.bar');
+        var n = Math.floor(Math.random() * 4) + 1;
+        bars.forEach(function (bar, i) { bar.classList.toggle('active', i < n); });
+      }, 400);
+
+      for (var i = 0; i < 14; i++) {
+        scanEl.innerHTML = phrase + dots[d % 3] + '<span class="cursor">.</span>';
+        d++;
+        await new Promise(function (r) { setTimeout(r, 280); });
       }
-    })();
 
-    document.addEventListener('click', (e) => {
+      clearInterval(scanBarInterval);
+
+      // Phase 2: connections available
+      phaseScanning.classList.add('hidden');
+      phaseScanning.classList.remove('active');
+      phaseFound.classList.remove('hidden');
+      phaseFound.classList.add('active');
+      foundText.textContent = '3 connections available';
+
+      // Light up bars
+      var bars = document.querySelectorAll('.bar');
+      bars.forEach(function (bar, i) { bar.classList.toggle('active', i < 3); });
+
+      await new Promise(function (r) { setTimeout(r, 2000); });
+
+      // Phase 3: show the 3 robot faces
+      phaseFound.classList.remove('active');
+      phaseFound.classList.add('hidden');
+      phasePortal.classList.add('active');
+
+      robotGrid.innerHTML = '';
+      availableRobots.forEach(function (bot) {
+        var card = document.createElement('div');
+        card.className = 'robot-card';
+        card.innerHTML =
+          '<div class="glyph" style="color: var(' + bot.colorVar + ')">' + bot.glyph + '</div>' +
+          '<div class="name" style="color: var(' + bot.colorVar + ')">' + bot.name + '</div>' +
+          '<div class="tagline">' + bot.tagline + '</div>';
+        card.addEventListener('click', function () { onSelectRobot(bot); });
+        robotGrid.appendChild(card);
+      });
+    }
+
+    async function onSelectRobot(bot) {
+      chosenRobot = bot;
+      usedMessages = [];
+      phasePortal.classList.remove('active');
+
+      phaseConnecting.classList.remove('hidden');
+      phaseConnecting.classList.add('active');
+
+      var connectPhrases = [
+        'establishing connection',
+        'locking frequency',
+        'opening channel'
+      ];
+      var phrase = connectPhrases[Math.floor(Math.random() * connectPhrases.length)];
+      connectingText.innerHTML = phrase + '<span class="cursor">.</span>';
+
+      if (cosmicAudio.ctx && !cosmicAudio.isPlaying) cosmicAudio.start();
+      cosmicAudio.playTransmissionBlip();
+
+      await new Promise(function (r) { setTimeout(r, 2200); });
+
+      phaseConnecting.classList.remove('active');
+      phaseConnecting.classList.add('hidden');
+      transmissionZone.style.display = 'flex';
+      invokeEl.style.display = 'block';
+
+      originEl.textContent = '\u27E8 signal intercepted \u27E9';
+      coordsEl.textContent = generateCoords();
+      setRobotAppearance(chosenRobot);
+
+      var firstMsg = chosenRobot.messages[Math.floor(Math.random() * chosenRobot.messages.length)];
+      usedMessages.push(firstMsg);
+      typeMessage(firstMsg);
+    }
+
+    runFlow();
+
+    var invokeHidden = false;
+    document.addEventListener('click', function (e) {
+      if (!chosenRobot) return;
       if (e.target === invokeEl || e.target === document.body || e.target.closest('.transmission-zone')) {
         newTransmission();
-        const particle = document.createElement('div');
+        if (!invokeHidden) {
+          invokeHidden = true;
+          invokeEl.style.opacity = '0';
+          setTimeout(function () { invokeEl.style.display = 'none'; }, 500);
+        }
+        var particle = document.createElement('div');
         particle.className = 'particle';
         particle.style.left = e.clientX + 'px';
         particle.style.top = e.clientY + 'px';
         particle.style.animation = 'fadeIn 0.3s ease forwards, hover 2s ease-out forwards';
         document.body.appendChild(particle);
-        setTimeout(() => particle.remove(), 2000);
+        setTimeout(function () { particle.remove(); }, 2000);
       }
     });
 
-    document.addEventListener('click', () => {
-      invokeEl.style.opacity = '0';
-      setTimeout(() => invokeEl.style.display = 'none', 500);
-    }, { once: true });
-
-    document.addEventListener('mousemove', (e) => {
-      const x = (e.clientX - window.innerWidth / 2) / 50;
-      const y = (e.clientY - window.innerHeight / 2) / 50;
-      robotEl.style.transform = `translate(${x}px, ${y}px)`;
+    document.addEventListener('mousemove', function (e) {
+      var x = (e.clientX - window.innerWidth / 2) / 50;
+      var y = (e.clientY - window.innerHeight / 2) / 50;
+      robotEl.style.transform = 'translate(' + x + 'px, ' + y + 'px)';
     });
 
-    setInterval(() => {
-      const bars = document.querySelectorAll('.bar');
-      const activeCount = Math.floor(Math.random() * 5) + 1;
-      bars.forEach((bar, i) => bar.classList.toggle('active', i < activeCount));
+    setInterval(function () {
+      if (!chosenRobot) return; // don't flicker bars during scanning
+      var bars = document.querySelectorAll('.bar');
+      var activeCount = Math.floor(Math.random() * 5) + 1;
+      bars.forEach(function (bar, i) { bar.classList.toggle('active', i < activeCount); });
     }, 3000);
 
-    audioToggle.addEventListener('click', (e) => {
+    audioToggle.addEventListener('click', function (e) {
       e.stopPropagation();
-      const isPlaying = cosmicAudio.toggle();
+      var isPlaying = cosmicAudio.toggle();
       audioToggle.classList.toggle('active', isPlaying);
-      audioIcon.textContent = isPlaying ? '◉' : '◯';
+      audioIcon.textContent = isPlaying ? '\u25C9' : '\u25CB';
       audioLabel.textContent = isPlaying ? 'sound on' : 'sound off';
     });
   </script>
 </body>
 </html>
-
